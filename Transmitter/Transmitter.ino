@@ -24,7 +24,7 @@ WiFiUDP Udp;
 
 const int maxLength = 255;
 char packetBuffer[maxLength]; //buffer to hold incoming and outgoing packets
-char message[] = "Hello Server";
+char message[] = "A";
 
 unsigned long sendPacket(IPAddress& address) {
   if (!Udp.beginPacket(address, serverPort)) {
