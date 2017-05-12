@@ -1,0 +1,11 @@
+TODO::
+get git working
+label the bottoms 
+refactor
+-config file
+-different func file
+remove serial output
+change packet size to 1
+separate debugging and performance?
+rename my access points?
+take vid of what i got for mom and dad

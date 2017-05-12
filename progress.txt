@@ -1,0 +1,21 @@
+5/8
+Did research on sending messages between the two devices.  Experimented with sending messages ad hoc and
+with an access point.  Spent a lot of time reading documentation.
+Basically just got familiar with the devices.
+
+5/9
+Spent more time getting familiar with the devices.  Met with Professor Stark and figured out how exactly I
+should send the messages and quantify throughput.  After that I got a UDP server to work and I attempted
+to write a UDP client but I couldn't get it to work. 
+
+5/10
+Got a UDP client to work.  Bugs were that I was using the wrong library and another because I was
+sending the packets to the wrong port.  Also spent time making a system to measure the throughput of the
+network.  Then I combined the two systems I had and got it working.
+Left at the end of the day with two devices sending messages back
+and forth.
+
+5/11
+Replicated the first system on two more devices and got them all to work at the same time.  Increased the rate
+at which messages were sent.  Made a convenient way to choose which configuration to upload.
+I made myself a big todo list for tomorrow.  I really need version control.
