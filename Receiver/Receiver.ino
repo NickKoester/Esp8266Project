@@ -2,12 +2,13 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#define CONFIG 1
+#define CONFIG 2
 
 /* DEVICE 1 */
 #if CONFIG == 1
 char *ssid = "ESPsoftAP_01";
 char *pass = "nickkoester";
+int channel = 1;
 unsigned int localUdpPort = 4210;  // local port to listen on
 #endif
 
@@ -15,14 +16,13 @@ unsigned int localUdpPort = 4210;  // local port to listen on
 #if CONFIG == 2
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
+int channel = 6;
 unsigned int localUdpPort = 4220;  // local port to listen on
 #endif
 
 /** Server **/
 WiFiUDP Udp;
 char incomingPacket[255];  // buffer for incoming packets
-char  replyPacket[] = "Received Message";  // a reply string to send back
-int prevConnected = 0; //debugging purposes
 
 /** Benchmarking **/
 const int timeInterval = 10;
@@ -59,7 +59,7 @@ void setupAccessPoint() {
   delay(100);
 
   Serial.print("Setting soft-AP ... ");
-  boolean result = WiFi.softAP(ssid, pass);
+  boolean result = WiFi.softAP(ssid, pass, channel);
   if(result == true)
   {
     Serial.println("Ready");
@@ -72,36 +72,19 @@ void setupAccessPoint() {
   WiFi.printDiag(Serial);
 }
 
-void countConnected() {
-  int numConnected = WiFi.softAPgetStationNum();
-  if(numConnected != prevConnected) {
-      Serial.printf("Stations connected = %d\n", numConnected);
-      prevConnected = numConnected;
-  }  
-}
-
 void receiveMessage() {
   int packetSize = Udp.parsePacket();
   if (packetSize)
   {
     // receive incoming UDP packets
-    //Serial.printf("Received %d bytes from %s, port %d\n", packetSize, Udp.remoteIP().toString().c_str(), Udp.remotePort());
     int len = Udp.read(incomingPacket, 255);
     if (len > 0)
     {
       incomingPacket[len] = 0;
     }
-    //Serial.printf("UDP packet contents: %s\n", incomingPacket);
   }
   
   bytesReceived += packetSize;
-}
-
-void sendAck() {
-    // send back a reply to the IP address and port we got the packet from
-    Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-    Udp.write(replyPacket);
-    Udp.endPacket();  
 }
 
 void setup()
@@ -124,14 +107,10 @@ void setup()
 
 void loop()
 {
-  countConnected();
   receiveMessage();
-  //sendAck();
 
   if(printFlag) {
     benchOutput();
     printFlag = false;
   }
-  
-  //delay(3000);
 }

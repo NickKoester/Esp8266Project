@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#define CONFIG 1
+#define CONFIG 2
 
 /* DEVICE 1 */
 #if CONFIG == 1
@@ -36,8 +36,6 @@ unsigned long sendPacket(IPAddress& address) {
   if (!Udp.endPacket()) {
     Serial.println("Error in Udp.endPacket()");
   }
-
-  Serial.println("Sent");
 }
 
 // attempt to connect to Wifi network:
@@ -57,28 +55,12 @@ void connectToServer() {
     Serial.print(".");
     delay(1000);
   }
-  Serial.println("");
-
   Serial.println("Connected to wifi");
-  Serial.println("\nStarting connection to server...");
+  Serial.println("");
   
+  Serial.println("\nStarting connection to server...");
   if (!Udp.begin(localPort)) {
     Serial.println("UDP connection failed");
-  }
-}
-
-void receivePacket() {
-  int packetSize = Udp.parsePacket();
-  if (packetSize)
-  {
-    // receive incoming UDP packets
-    Serial.printf("Received %d bytes from %s, port %d\n", packetSize, Udp.remoteIP().toString().c_str(), Udp.remotePort());
-    int len = Udp.read(packetBuffer, 255);
-    if (len > 0)
-    {
-      packetBuffer[len] = 0;
-    }
-    Serial.printf("UDP packet contents: %s\n", packetBuffer);
   }
 }
 
@@ -95,6 +77,4 @@ void setup() {
 
 void loop() {
   sendPacket(receiverIP); // send an packet to server
-  //delay(1000);            // wait to see if a reply is available
-  //receivePacket();
 }
