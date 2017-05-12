@@ -16,7 +16,7 @@ unsigned int localUdpPort = 4210;  // local port to listen on
 #if CONFIG == 2
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
-int channel = 6;
+int channel = 1;
 unsigned int localUdpPort = 4220;  // local port to listen on
 #endif
 
