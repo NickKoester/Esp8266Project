@@ -19,3 +19,8 @@ and forth.
 Replicated the first system on two more devices and got them all to work at the same time.  Increased the rate
 at which messages were sent.  Made a convenient way to choose which configuration to upload.
 I made myself a big todo list for tomorrow.  I really need version control.
+
+5/12
+Finally got git working on Windows so I was able to make a separate branch for debugging and performance
+builds.  Spent today just cleaning up my code and experimenting with the devices.  I did a lot of things on
+my TODO list.
