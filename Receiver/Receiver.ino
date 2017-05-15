@@ -22,7 +22,8 @@ unsigned int localUdpPort = 4220;  // local port to listen on
 
 /** Server **/
 WiFiUDP Udp;
-char incomingPacket[255];  // buffer for incoming packets
+const int maxLength = 1460;
+char incomingPacket[4 * maxLength];  // buffer for incoming packets
 
 /** Benchmarking **/
 const int timeInterval = 10;
@@ -77,7 +78,7 @@ void receiveMessage() {
   if (packetSize)
   {
     // receive incoming UDP packets
-    int len = Udp.read(incomingPacket, 255);
+    int len = Udp.read(incomingPacket, maxLength);
     if (len > 0)
     {
       incomingPacket[len] = 0;

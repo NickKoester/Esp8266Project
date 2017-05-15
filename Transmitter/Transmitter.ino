@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
+#include <string>
 
 #define CONFIG 2
 
@@ -22,16 +23,17 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-const int maxLength = 255;
-char packetBuffer[maxLength]; //buffer to hold incoming and outgoing packets
-char message[] = "A";
+const int maxLength = 1460;
+char packetBuffer[maxLength]; //do i use this anymore?
+
+std::string messageStr(maxLength, 'A');
 
 unsigned long sendPacket(IPAddress& address) {
   if (!Udp.beginPacket(address, serverPort)) {
     Serial.println("Error in Udp.beginPacket()");
   }
   
-  Udp.write(message);
+  Udp.write(messageStr.c_str());
   
   if (!Udp.endPacket()) {
     Serial.println("Error in Udp.endPacket()");
