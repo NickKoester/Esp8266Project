@@ -1,8 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
-#include <string>
 
-#define CONFIG 1
+#define CONFIG 2
 
 /* DEVICE 1 */
 #if CONFIG == 1
@@ -23,11 +22,7 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-const int maxLength = 255;
-char packetBuffer[maxLength]; //do i use this anymore?
-
 char message[] = "Hello Server";
-std::string messageStr(maxLength, 'A');
 
 unsigned long sendPacket(IPAddress& address) {
   if (!Udp.beginPacket(address, serverPort)) {

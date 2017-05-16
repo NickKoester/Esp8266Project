@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#define CONFIG 1
+#define CONFIG 2
 
 /* DEVICE 1 */
 #if CONFIG == 1
@@ -22,8 +22,8 @@ unsigned int localUdpPort = 4220;  // local port to listen on
 
 /** Server **/
 WiFiUDP Udp;
-const int maxLength = 1;
-char incomingPacket[255];  // buffer for incoming packets
+const int bufferSize = 10000;
+char incomingPacket[bufferSize];  // buffer for incoming packets
 
 /** Benchmarking **/
 const int timeInterval = 10;
@@ -78,7 +78,7 @@ void receiveMessage() {
   if (packetSize)
   {
     // receive incoming UDP packets
-    int len = Udp.read(incomingPacket, 255);
+    int len = Udp.read(incomingPacket, bufferSize);
     if (len > 0)
     {
       incomingPacket[len] = 0;
