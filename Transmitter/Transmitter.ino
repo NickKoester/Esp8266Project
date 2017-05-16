@@ -2,7 +2,7 @@
 #include <WiFiUdp.h>
 #include <string>
 
-#define CONFIG 2
+#define CONFIG 1
 
 /* DEVICE 1 */
 #if CONFIG == 1
@@ -23,9 +23,10 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-const int maxLength = 1460;
+const int maxLength = 255;
 char packetBuffer[maxLength]; //do i use this anymore?
 
+char message[] = "Hello Server";
 std::string messageStr(maxLength, 'A');
 
 unsigned long sendPacket(IPAddress& address) {
@@ -33,7 +34,7 @@ unsigned long sendPacket(IPAddress& address) {
     Serial.println("Error in Udp.beginPacket()");
   }
   
-  Udp.write(messageStr.c_str());
+  Udp.write(message);
   
   if (!Udp.endPacket()) {
     Serial.println("Error in Udp.endPacket()");
