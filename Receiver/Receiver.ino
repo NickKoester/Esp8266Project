@@ -22,8 +22,6 @@ unsigned int localUdpPort = 4220;  // local port to listen on
 
 /** Server **/
 WiFiUDP Udp;
-const int bufferSize = 10000;
-char incomingPacket[bufferSize];  // buffer for incoming packets
 
 /** Benchmarking **/
 const int timeInterval = 10;
@@ -74,17 +72,7 @@ void setupAccessPoint() {
 }
 
 void receiveMessage() {
-  int packetSize = Udp.parsePacket();
-  if (packetSize)
-  {
-    // receive incoming UDP packets
-    int len = Udp.read(incomingPacket, bufferSize);
-    if (len > 0)
-    {
-      incomingPacket[len] = 0;
-    }
-  }
-  
+  int packetSize = Udp.parsePacket(); 
   bytesReceived += packetSize;
 }
 
