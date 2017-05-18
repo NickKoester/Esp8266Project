@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
+#include <string>
 
 #define CONFIG 2
 
@@ -22,14 +23,14 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-char message[] = "A";
+std::string message(packetSize, 'A');
 
 unsigned long sendPacket(IPAddress& address) {
   if (!Udp.beginPacket(address, serverPort)) {
     Serial.println("Error in Udp.beginPacket()");
   }
   
-  Udp.write(message);
+  Udp.write(message.c_str());
   
   if (!Udp.endPacket()) {
     Serial.println("Error in Udp.endPacket()");
@@ -75,5 +76,4 @@ void setup() {
 
 void loop() {
   sendPacket(receiverIP); // send an packet to server
-  delay(10);
 }
