@@ -23,6 +23,7 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
+int packetSize = 1460;
 std::string message(packetSize, 'A');
 
 unsigned long sendPacket(IPAddress& address) {
