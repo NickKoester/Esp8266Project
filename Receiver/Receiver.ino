@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#define CONFIG 2
+#define CONFIG 1
 
 /* DEVICE 1 */
 #if CONFIG == 1

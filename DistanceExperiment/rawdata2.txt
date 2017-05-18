@@ -1,0 +1,135 @@
+set 2
+d0
+alone
+Throughput at 20: 11601.60 bytes / sec
+Throughput at 30: 12813.60 bytes / sec
+Throughput at 40: 13042.80 bytes / sec
+Throughput at 50: 12796.80 bytes / sec
+Throughput at 60: 12765.60 bytes / sec
+Throughput at 70: 12795.60 bytes / sec
+
+both
+Throughput at 30: 8365.20 bytes / sec
+Throughput at 40: 8467.20 bytes / sec
+Throughput at 50: 7914.00 bytes / sec
+Throughput at 60: 7220.40 bytes / sec
+Throughput at 70: 7362.00 bytes / sec
+Throughput at 80: 7453.20 bytes / sec
+
+d1
+alone
+Throughput at 30: 13422.00 bytes / sec
+Throughput at 40: 13141.20 bytes / sec
+Throughput at 50: 13330.80 bytes / sec
+Throughput at 60: 13198.80 bytes / sec
+Throughput at 70: 13479.60 bytes / sec
+Throughput at 80: 13382.40 bytes / sec
+
+both
+Throughput at 40: 6955.20 bytes / sec
+Throughput at 50: 7249.20 bytes / sec
+Throughput at 60: 7323.60 bytes / sec
+Throughput at 70: 7074.00 bytes / sec
+Throughput at 80: 7302.00 bytes / sec
+Throughput at 90: 7364.40 bytes / sec
+
+d2
+alone
+Throughput at 30: 14143.20 bytes / sec
+Throughput at 40: 13809.60 bytes / sec
+Throughput at 50: 13866.00 bytes / sec
+Throughput at 60: 13908.00 bytes / sec
+Throughput at 70: 13591.20 bytes / sec
+Throughput at 80: 13903.20 bytes / sec
+
+both
+Throughput at 20: 9237.60 bytes / sec
+Throughput at 30: 8493.60 bytes / sec
+Throughput at 40: 9122.40 bytes / sec
+Throughput at 50: 9622.80 bytes / sec
+Throughput at 60: 9457.20 bytes / sec
+Throughput at 70: 8638.80 bytes / sec
+
+d3
+alone
+Throughput at 30: 14131.20 bytes / sec
+Throughput at 40: 14110.80 bytes / sec
+Throughput at 50: 14288.40 bytes / sec
+Throughput at 60: 13920.00 bytes / sec
+Throughput at 70: 14114.40 bytes / sec
+Throughput at 80: 14144.40 bytes / sec
+
+both
+Throughput at 30: 8158.80 bytes / sec
+Throughput at 40: 8042.40 bytes / sec
+Throughput at 50: 7504.80 bytes / sec
+Throughput at 60: 7658.40 bytes / sec
+Throughput at 70: 7432.80 bytes / sec
+Throughput at 80: 6925.20 bytes / sec
+
+d4
+alone
+Throughput at 20: 13713.60 bytes / sec
+Throughput at 30: 13609.20 bytes / sec
+Throughput at 40: 13483.20 bytes / sec
+Throughput at 50: 13840.80 bytes / sec
+Throughput at 60: 13882.80 bytes / sec
+Throughput at 70: 14038.80 bytes / sec
+
+both
+Throughput at 40: 6778.80 bytes / sec
+Throughput at 50: 7327.20 bytes / sec
+Throughput at 60: 7006.80 bytes / sec
+Throughput at 70: 6913.20 bytes / sec
+Throughput at 80: 6918.00 bytes / sec
+Throughput at 90: 6742.80 bytes / sec
+
+d5
+alone
+Throughput at 20: 13198.80 bytes / sec
+Throughput at 30: 12506.40 bytes / sec
+Throughput at 40: 13034.40 bytes / sec
+Throughput at 50: 12753.60 bytes / sec
+Throughput at 60: 12838.80 bytes / sec
+Throughput at 70: 12646.80 bytes / sec
+
+both
+Throughput at 30: 8625.60 bytes / sec
+Throughput at 40: 8773.20 bytes / sec
+Throughput at 50: 9032.40 bytes / sec
+Throughput at 60: 9152.40 bytes / sec
+Throughput at 70: 9116.40 bytes / sec
+Throughput at 80: 9296.40 bytes / sec
+
+d6
+alone
+Throughput at 30: 12952.80 bytes / sec
+Throughput at 40: 12769.20 bytes / sec
+Throughput at 50: 13237.20 bytes / sec
+Throughput at 60: 12951.60 bytes / sec
+Throughput at 70: 13227.60 bytes / sec
+Throughput at 80: 13093.20 bytes / sec
+
+both
+Throughput at 110: 8304.00 bytes / sec
+Throughput at 120: 8259.60 bytes / sec
+Throughput at 130: 7826.40 bytes / sec
+Throughput at 140: 8287.20 bytes / sec
+Throughput at 150: 8335.20 bytes / sec
+Throughput at 160: 7664.40 bytes / sec
+
+d7
+alone
+Throughput at 30: 13986.00 bytes / sec
+Throughput at 40: 13516.80 bytes / sec
+Throughput at 50: 13531.20 bytes / sec
+Throughput at 60: 13584.00 bytes / sec
+Throughput at 70: 13935.60 bytes / sec
+Throughput at 80: 13657.20 bytes / sec
+both
+Throughput at 30: 7226.40 bytes / sec
+Throughput at 40: 7023.60 bytes / sec
+Throughput at 50: 6655.20 bytes / sec
+Throughput at 60: 6758.40 bytes / sec
+Throughput at 70: 6909.60 bytes / sec
+Throughput at 80: 6723.60 bytes / sec
