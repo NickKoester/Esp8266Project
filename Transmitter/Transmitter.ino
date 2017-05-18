@@ -22,7 +22,7 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-char message[] = "Hello Server";
+char message[] = "A";
 
 unsigned long sendPacket(IPAddress& address) {
   if (!Udp.beginPacket(address, serverPort)) {
@@ -75,4 +75,5 @@ void setup() {
 
 void loop() {
   sendPacket(receiverIP); // send an packet to server
+  delay(10);
 }
