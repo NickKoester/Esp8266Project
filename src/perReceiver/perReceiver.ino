@@ -69,7 +69,7 @@ void setupAccessPoint() {
 }
 
 void receiveMessage() {
-  int packetSize = Udp.parsePacket();\
+  int packetSize = Udp.parsePacket();
 
   if(packetSize > 0) {
     packetsReceived++;

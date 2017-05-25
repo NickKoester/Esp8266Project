@@ -24,7 +24,7 @@ IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
 int NUM_PACKETS = 10000;
-int packetSize = 100;
+int packetSize = 1500;
 std::string message(packetSize, 'A');
 
 unsigned long sendPacket(IPAddress& address) {
@@ -81,7 +81,7 @@ void loop() {
   
   for(int i = 0; i < NUM_PACKETS; ++i) {
       sendPacket(receiverIP); // send an packet to server
-      delay(5);
+      delay(0);
   }
   
   Serial.println("Done");
