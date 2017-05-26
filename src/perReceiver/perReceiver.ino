@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#define CONFIG 1
+#define CONFIG 2
 
 /* DEVICE 1 */
 #if CONFIG == 1
@@ -29,24 +29,21 @@ const int MS = 1000;
 const int US = 1000000;
 
 int timestamp = 0;
-double bytesReceived = 0;
-double throughput = 0;
+double packetsReceived = 0;
 
 Ticker tick;
 bool printFlag = false;
 
 void benchOutput() {
-  Serial.print("Throughput at ");
+  Serial.print("Packets received at ");
   Serial.print(timestamp);
   Serial.print(": ");
-  Serial.print(throughput);
-  Serial.println(" bytes / sec");
+  Serial.print(packetsReceived);
+  Serial.println(" packets");
 }
 
 void capture() {
   timestamp = micros() / US;
-  throughput = bytesReceived / timeInterval;
-  bytesReceived = 0;
   printFlag = true;
 }
 
@@ -72,8 +69,11 @@ void setupAccessPoint() {
 }
 
 void receiveMessage() {
-  int packetSize = Udp.parsePacket(); 
-  bytesReceived += packetSize;
+  int packetSize = Udp.parsePacket();
+
+  if(packetSize > 0) {
+    packetsReceived++;
+  }
 }
 
 void setup()
