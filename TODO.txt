@@ -9,3 +9,4 @@ refactor
 [x] separate debugging and performance?
 rename my access points?
 [x] take vid of what i got for mom and dad
+Packets sent vs packets received
