@@ -8,6 +8,7 @@
 #if CONFIG == 1
 char *ssid = "ESPsoftAP_01";
 char *pass = "nickkoester";
+float dBm = 20.5;
 unsigned int serverPort = 4210;
 unsigned int localPort = 2390;
 #endif
@@ -16,6 +17,7 @@ unsigned int localPort = 2390;
 #if CONFIG == 2
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
+float dBm = 15;
 unsigned int serverPort = 4220;
 unsigned int localPort = 2290;
 #endif
@@ -23,8 +25,8 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-int NUM_PACKETS = 10000;
-int packetSize = 1500;
+int NUM_PACKETS = 2000;
+int packetSize = 1000;
 std::string message(packetSize, 'A');
 
 unsigned long sendPacket(IPAddress& address) {
@@ -45,6 +47,7 @@ void connectToServer() {
   WiFi.softAPdisconnect();
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
+  WiFi.setOutputPower(dBm);
   delay(100);
   
   Serial.print("Attempting to connect to SSID: ");
@@ -81,7 +84,7 @@ void loop() {
   
   for(int i = 0; i < NUM_PACKETS; ++i) {
       sendPacket(receiverIP); // send an packet to server
-      delay(0);
+      delay(10);
   }
   
   Serial.println("Done");

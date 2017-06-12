@@ -77,4 +77,5 @@ void setup() {
 
 void loop() {
   sendPacket(receiverIP); // send an packet to server
+  //delay(8);
 }

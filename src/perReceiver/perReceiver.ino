@@ -8,7 +8,8 @@
 #if CONFIG == 1
 char *ssid = "ESPsoftAP_01";
 char *pass = "nickkoester";
-int channel = 6;
+int channel = 1;
+float dBm = 20.5;
 unsigned int localUdpPort = 4210;  // local port to listen on
 #endif
 
@@ -17,6 +18,7 @@ unsigned int localUdpPort = 4210;  // local port to listen on
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
 int channel = 1;
+float dBm = 20.5;
 unsigned int localUdpPort = 4220;  // local port to listen on
 #endif
 
@@ -52,6 +54,7 @@ void setupAccessPoint() {
   WiFi.softAPdisconnect();
   WiFi.disconnect();
   WiFi.mode(WIFI_AP);
+  WiFi.setOutputPower(dBm);
   delay(100);
 
   Serial.print("Setting soft-AP ... ");

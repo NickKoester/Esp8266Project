@@ -12,7 +12,7 @@ void setup()
   delay(100);
 
   Serial.print("Setting soft-AP ... ");
-  boolean result = WiFi.softAP("ESPsoftAP_01", "nickkoester");
+  boolean result = WiFi.softAP("BridgeTest", "nickkoester");
   if(result == true)
   {
     Serial.println("Ready");
