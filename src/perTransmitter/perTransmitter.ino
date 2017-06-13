@@ -1,8 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <string>
+#include "exponential.h"
 
-#define CONFIG 2
+#define CONFIG 1
 
 /* DEVICE 1 */
 #if CONFIG == 1
@@ -17,7 +18,7 @@ unsigned int localPort = 2390;
 #if CONFIG == 2
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
-float dBm = 15;
+float dBm = 20.5;
 unsigned int serverPort = 4220;
 unsigned int localPort = 2290;
 #endif
@@ -25,9 +26,14 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
+/* TRANSMITTER PARAMETERS */
 int NUM_PACKETS = 2000;
-int packetSize = 1000;
+int packetSize = 500;
+double arrivalRate = 5.0;
+int generatorSeed = 1;
+
 std::string message(packetSize, 'A');
+ExponentialDist randomNum(arrivalRate, generatorSeed);
 
 unsigned long sendPacket(IPAddress& address) {
   if (!Udp.beginPacket(address, serverPort)) {
@@ -84,7 +90,7 @@ void loop() {
   
   for(int i = 0; i < NUM_PACKETS; ++i) {
       sendPacket(receiverIP); // send an packet to server
-      delay(10);
+      delay(randomNum.generate());
   }
   
   Serial.println("Done");

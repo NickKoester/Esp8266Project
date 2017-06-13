@@ -2,13 +2,13 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#define CONFIG 2
+#define CONFIG 1
 
 /* DEVICE 1 */
 #if CONFIG == 1
 char *ssid = "ESPsoftAP_01";
 char *pass = "nickkoester";
-int channel = 1;
+int channel = 11;
 float dBm = 20.5;
 unsigned int localUdpPort = 4210;  // local port to listen on
 #endif
