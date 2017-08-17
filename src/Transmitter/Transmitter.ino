@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <string>
+#include "exponential.h"
 
 #define CONFIG 1
 
@@ -23,19 +24,17 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-int packetSize = 1460;
-std::string message(packetSize, 'A');
+#define PACKET_SIZE 600
+double arrivalRate = 1.0;
+int generatorSeed = 1;
+
+char payload[PACKET_SIZE];
+ExponentialDist randomNum(arrivalRate, generatorSeed);
 
 unsigned long sendPacket(IPAddress& address) {
-  if (!Udp.beginPacket(address, serverPort)) {
-    Serial.println("Error in Udp.beginPacket()");
-  }
-  
-  Udp.write(message.c_str());
-  
-  if (!Udp.endPacket()) {
-    Serial.println("Error in Udp.endPacket()");
-  }
+  Udp.beginPacket(address, serverPort);
+  Udp.write(payload);
+  Udp.endPacket();
 }
 
 // attempt to connect to Wifi network:
@@ -71,11 +70,15 @@ void setup() {
 
   Serial.print("Using configuration: ");
   Serial.println(CONFIG);
-  
+  memset(payload, 'A', PACKET_SIZE);
+
+  pinMode(16, OUTPUT);
   connectToServer();
 }
 
 void loop() {
+  digitalWrite(16, HIGH);
   sendPacket(receiverIP); // send an packet to server
-  //delay(8);
+  digitalWrite(16, LOW);
+  delay(0);
 }

@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#define CONFIG 1
+#define CONFIG 2
 
 /* DEVICE 1 */
 #if CONFIG == 1
@@ -17,7 +17,7 @@ unsigned int localUdpPort = 4210;  // local port to listen on
 #if CONFIG == 2
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
-int channel = 1;
+int channel = 11;
 float dBm = 20.5;
 unsigned int localUdpPort = 4220;  // local port to listen on
 #endif
@@ -26,7 +26,7 @@ unsigned int localUdpPort = 4220;  // local port to listen on
 WiFiUDP Udp;
 
 /** Benchmarking **/
-const int timeInterval = 10;
+const int timeInterval = 60;
 const int MS = 1000;
 const int US = 1000000;
 
@@ -37,15 +37,15 @@ Ticker tick;
 bool printFlag = false;
 
 void benchOutput() {
-  Serial.print("Packets received at ");
-  Serial.print(timestamp);
-  Serial.print(": ");
+  //Serial.print("Packets received at ");
+  //Serial.print(timestamp);
+  //Serial.print(": ");
   Serial.print(packetsReceived);
-  Serial.println(" packets");
+  //Serial.println(" packets");
 }
 
 void capture() {
-  timestamp = micros() / US;
+  //timestamp = micros() / US;
   printFlag = true;
 }
 
@@ -72,9 +72,11 @@ void setupAccessPoint() {
 }
 
 void receiveMessage() {
+  digitalWrite(16, LOW);
   int packetSize = Udp.parsePacket();
 
   if(packetSize > 0) {
+    digitalWrite(16, HIGH);
     packetsReceived++;
   }
 }
@@ -88,6 +90,8 @@ void setup()
   Serial.print("Using configuration: ");
   Serial.println(CONFIG);
 
+  pinMode(16, OUTPUT);
+  
   setupAccessPoint();
 
   Udp.begin(localUdpPort);

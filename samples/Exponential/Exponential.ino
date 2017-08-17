@@ -41,7 +41,12 @@ double generateExponential()
 }
 
 void loop() {
-  double num = generateExponential();
-  testAverage(num);
-  delay(10);
+  if(i < 1000) {
+    double num = generateExponential();
+    Serial.println(num);
+    i++;
+  }
+  else{
+    delay(10000);
+  }
 }

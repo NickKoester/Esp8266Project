@@ -8,7 +8,7 @@
 #if CONFIG == 1
 char *ssid = "ESPsoftAP_01";
 char *pass = "nickkoester";
-int channel = 13;
+int channel = 11;
 unsigned int localUdpPort = 4210;  // local port to listen on
 #endif
 
@@ -71,8 +71,15 @@ void setupAccessPoint() {
   WiFi.printDiag(Serial);
 }
 
+bool output = 1;
+
 void receiveMessage() {
-  int packetSize = Udp.parsePacket(); 
+  digitalWrite(16, LOW);
+  int packetSize = Udp.parsePacket();
+  if(packetSize > 0) {
+    digitalWrite(16, HIGH);
+  }
+
   bytesReceived += packetSize;
 }
 
@@ -92,12 +99,13 @@ void setup()
 
   tick.attach(timeInterval, capture);
   Serial.println("Starting count...");
+  pinMode(16, OUTPUT);
 }
 
 void loop()
 {
   receiveMessage();
-
+  
   if(printFlag) {
     benchOutput();
     printFlag = false;

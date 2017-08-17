@@ -3,7 +3,7 @@
 #include <string>
 #include "exponential.h"
 
-#define CONFIG 1
+#define CONFIG 2
 
 /* DEVICE 1 */
 #if CONFIG == 1
@@ -28,22 +28,20 @@ WiFiUDP Udp;
 
 /* TRANSMITTER PARAMETERS */
 int NUM_PACKETS = 2000;
-int packetSize = 500;
+int packetSize = 600;
 double arrivalRate = 5.0;
 int generatorSeed = 1;
 
 std::string message(packetSize, 'A');
 ExponentialDist randomNum(arrivalRate, generatorSeed);
 
+int packetsSent = 0;
 unsigned long sendPacket(IPAddress& address) {
-  if (!Udp.beginPacket(address, serverPort)) {
-    Serial.println("Error in Udp.beginPacket()");
-  }
-  
+  Udp.beginPacket(address, serverPort);
   Udp.write(message.c_str());
-  
-  if (!Udp.endPacket()) {
-    Serial.println("Error in Udp.endPacket()");
+    
+  if (Udp.endPacket()) {
+    ++packetsSent;
   }
 }
 
@@ -81,20 +79,22 @@ void setup() {
 
   Serial.print("Using configuration: ");
   Serial.println(CONFIG);
-  
+
+  pinMode(16, OUTPUT);
   connectToServer();
 }
 
-void loop() {
-  Serial.println("Sending packets...");
-  
-  for(int i = 0; i < NUM_PACKETS; ++i) {
-      sendPacket(receiverIP); // send an packet to server
-      delay(randomNum.generate());
-  }
-  
-  Serial.println("Done");
-  while(true) {
+
+
+void loop() {  
+  if(packetsSent < NUM_PACKETS) {
+    digitalWrite(16, HIGH);
+    sendPacket(receiverIP);
+    digitalWrite(16, LOW);
+      
+    delayMicroseconds(10);
+  } 
+  else {
     delay(10000);
   }
 }
