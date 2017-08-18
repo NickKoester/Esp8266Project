@@ -20,6 +20,8 @@ int channel = 1;
 unsigned int localUdpPort = 4220;  // local port to listen on
 #endif
 
+#define PACKET_SIZE 1460
+
 /** Server **/
 WiFiUDP Udp;
 
@@ -31,20 +33,18 @@ const int US = 1000000;
 int timestamp = 0;
 double bytesReceived = 0;
 double throughput = 0;
+char checkMessage[PACKET_SIZE];
+char recvPacket[PACKET_SIZE];
 
 Ticker tick;
 bool printFlag = false;
 
 void benchOutput() {
-  Serial.print("Throughput at ");
-  Serial.print(timestamp);
-  Serial.print(": ");
-  Serial.print(throughput);
-  Serial.println(" bytes / sec");
+  Serial.print(throughput * 8 / US);
+  Serial.println(" Mbs");
 }
 
 void capture() {
-  timestamp = micros() / US;
   throughput = bytesReceived / timeInterval;
   bytesReceived = 0;
   printFlag = true;
@@ -77,10 +77,14 @@ void receiveMessage() {
   digitalWrite(16, LOW);
   int packetSize = Udp.parsePacket();
   if(packetSize > 0) {
+    int len = Udp.read(recvPacket, PACKET_SIZE);
+    if(len > 0) {
+      if(!memcmp(checkMessage, recvPacket, PACKET_SIZE)) {
+        bytesReceived += len;
+      }
+    }
     digitalWrite(16, HIGH);
   }
-
-  bytesReceived += packetSize;
 }
 
 void setup()
@@ -96,9 +100,10 @@ void setup()
 
   Udp.begin(localUdpPort);
   Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), localUdpPort);
+  memset(checkMessage, 'A', PACKET_SIZE);
 
   tick.attach(timeInterval, capture);
-  Serial.println("Starting count...");
+  Serial.println("Measuring throughput...");
   pinMode(16, OUTPUT);
 }
 

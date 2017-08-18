@@ -22,26 +22,25 @@ float dBm = 20.5;
 unsigned int localUdpPort = 4220;  // local port to listen on
 #endif
 
+#define PACKET_SIZE 600
 /** Server **/
 WiFiUDP Udp;
 
 /** Benchmarking **/
-const int timeInterval = 60;
+const int timeInterval = 10;
 const int MS = 1000;
 const int US = 1000000;
 
 int timestamp = 0;
 double packetsReceived = 0;
+char checkMessage[PACKET_SIZE];
+char recvPacket[PACKET_SIZE];
 
 Ticker tick;
 bool printFlag = false;
 
 void benchOutput() {
-  //Serial.print("Packets received at ");
-  //Serial.print(timestamp);
-  //Serial.print(": ");
-  Serial.print(packetsReceived);
-  //Serial.println(" packets");
+  Serial.println(packetsReceived);
 }
 
 void capture() {
@@ -74,10 +73,14 @@ void setupAccessPoint() {
 void receiveMessage() {
   digitalWrite(16, LOW);
   int packetSize = Udp.parsePacket();
-
   if(packetSize > 0) {
+    int len = Udp.read(recvPacket, PACKET_SIZE);
+    if(len > 0) {
+      if(!memcmp(checkMessage, recvPacket, PACKET_SIZE)) {
+        packetsReceived++;
+      }
+    }
     digitalWrite(16, HIGH);
-    packetsReceived++;
   }
 }
 
@@ -93,6 +96,7 @@ void setup()
   pinMode(16, OUTPUT);
   
   setupAccessPoint();
+  memset(checkMessage, 'A', PACKET_SIZE);
 
   Udp.begin(localUdpPort);
   Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), localUdpPort);

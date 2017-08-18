@@ -23,26 +23,25 @@ unsigned int serverPort = 4220;
 unsigned int localPort = 2290;
 #endif
 
+#define PACKET_SIZE 600
+
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
 /* TRANSMITTER PARAMETERS */
 int NUM_PACKETS = 2000;
-int packetSize = 600;
-double arrivalRate = 5.0;
+double arrivalRate = 1.0;
 int generatorSeed = 1;
 
-std::string message(packetSize, 'A');
+char payload[PACKET_SIZE];
 ExponentialDist randomNum(arrivalRate, generatorSeed);
-
 int packetsSent = 0;
+
 unsigned long sendPacket(IPAddress& address) {
   Udp.beginPacket(address, serverPort);
-  Udp.write(message.c_str());
-    
-  if (Udp.endPacket()) {
-    ++packetsSent;
-  }
+  Udp.write(payload);
+  
+  return Udp.endPacket();
 }
 
 // attempt to connect to Wifi network:
@@ -79,6 +78,7 @@ void setup() {
 
   Serial.print("Using configuration: ");
   Serial.println(CONFIG);
+  memset(payload, 'A', PACKET_SIZE);
 
   pinMode(16, OUTPUT);
   connectToServer();
@@ -89,10 +89,12 @@ void setup() {
 void loop() {  
   if(packetsSent < NUM_PACKETS) {
     digitalWrite(16, HIGH);
-    sendPacket(receiverIP);
+    if(sendPacket(receiverIP)) {
+      ++packetsSent;
+    }
     digitalWrite(16, LOW);
-      
-    delayMicroseconds(10);
+
+    delayMicroseconds(0);
   } 
   else {
     delay(10000);

@@ -24,7 +24,7 @@ unsigned int localPort = 2290;
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-#define PACKET_SIZE 600
+#define PACKET_SIZE 1460
 double arrivalRate = 1.0;
 int generatorSeed = 1;
 
@@ -78,7 +78,7 @@ void setup() {
 
 void loop() {
   digitalWrite(16, HIGH);
-  sendPacket(receiverIP); // send an packet to server
+  sendPacket(receiverIP);
   digitalWrite(16, LOW);
   delay(0);
 }
