@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <string>
+#include "exponential.h"
 
 #define CONFIG 2
 
@@ -8,35 +9,41 @@
 #if CONFIG == 1
 char *ssid = "ESPsoftAP_01";
 char *pass = "nickkoester";
+float dBm = 20.5;
 unsigned int serverPort = 4210;
 unsigned int localPort = 2390;
+WiFiPhyMode_t phy = WIFI_PHY_MODE_11B;
 #endif
 
 /* DEVICE 2 */
 #if CONFIG == 2
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
+float dBm = 5.0;
 unsigned int serverPort = 4220;
 unsigned int localPort = 2290;
+WiFiPhyMode_t phy = WIFI_PHY_MODE_11B;
 #endif
+
+#define PACKET_SIZE 1112
 
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
-int NUM_PACKETS = 10000;
-int packetSize = 1500;
-std::string message(packetSize, 'A');
+/* TRANSMITTER PARAMETERS */
+int NUM_PACKETS = 5000;
+double arrivalRate = 1.0;
+int generatorSeed = 1;
+
+char payload[PACKET_SIZE];
+ExponentialDist randomNum(arrivalRate, generatorSeed);
+int packetsSent = 0;
 
 unsigned long sendPacket(IPAddress& address) {
-  if (!Udp.beginPacket(address, serverPort)) {
-    Serial.println("Error in Udp.beginPacket()");
-  }
+  Udp.beginPacket(address, serverPort);
+  Udp.write(payload);
   
-  Udp.write(message.c_str());
-  
-  if (!Udp.endPacket()) {
-    Serial.println("Error in Udp.endPacket()");
-  }
+  return Udp.endPacket();
 }
 
 // attempt to connect to Wifi network:
@@ -45,6 +52,8 @@ void connectToServer() {
   WiFi.softAPdisconnect();
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
+  WiFi.setOutputPower(dBm);
+  WiFi.setPhyMode(phy);
   delay(100);
   
   Serial.print("Attempting to connect to SSID: ");
@@ -72,20 +81,25 @@ void setup() {
 
   Serial.print("Using configuration: ");
   Serial.println(CONFIG);
-  
+  memset(payload, 'A', PACKET_SIZE);
+
+  pinMode(16, OUTPUT);
   connectToServer();
 }
 
-void loop() {
-  Serial.println("Sending packets...");
-  
-  for(int i = 0; i < NUM_PACKETS; ++i) {
-      sendPacket(receiverIP); // send an packet to server
-      delay(0);
-  }
-  
-  Serial.println("Done");
-  while(true) {
+
+
+void loop() {  
+  if(packetsSent < NUM_PACKETS) {
+    digitalWrite(16, HIGH);
+    if(sendPacket(receiverIP)) {
+      ++packetsSent;
+    }
+    digitalWrite(16, LOW);
+
+    delayMicroseconds(10);
+  } 
+  else {
     delay(10000);
   }
 }
