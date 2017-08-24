@@ -9,14 +9,15 @@ SoftwareSerial mySerial(2,3);
 uint16_t addr16 = 0x1234;
 uint8_t option = 1; // Acks disabled
 uint8_t payload[len];
-uint8_t id = 1;
+uint8_t id = 0;
 /*******************/
 
 Tx16Request tx = Tx16Request(addr16, option, payload, len, id);
 TxStatusResponse rx = TxStatusResponse();
-Tx16Request rndmb = Tx16Request(addr16, option, payload, len, 0);
+Tx16Request rndmb = Tx16Request(addr16, option, payload, len, id);
 
 unsigned long syncMillisBase = 0;
+unsigned long origin = 0;
 
 void requestTimeFromRecv() {
   do{
@@ -81,7 +82,15 @@ void syncTimeWithRecv() {
   
   unsigned long recvTime = getTimeFromArray(rawTime);
 
-  syncMillisBase = recvTime + (time2 - time1) / 2; 
+  syncMillisBase = recvTime + (time2 - time1) / 2;
+  origin = time2;
+}
+
+void serializeTime(unsigned long src, uint8_t dest[4]) {
+  dest[0] = src >> 24 & 0xFF;
+  dest[1] = src >> 16 & 0xFF;
+  dest[2] = src >> 8 & 0xFF;
+  dest[3] = src >> 0 & 0xFF;
 }
 
 void setup() {
@@ -92,10 +101,16 @@ void setup() {
   delay(342);
 
   syncTimeWithRecv();
-  Serial.print("SyncMillisBase: ");
-  Serial.println(syncMillisBase);
+  Serial.print("Offset: ");
+  Serial.println(offset);
 }
 
 void loop() {
-  
+// 1. Get synced timestamp
+  unsigned long timestamp = syncMillisBase + millis() - origin;
+// 2. put in packet
+  memset(payload, '\0', len);
+  serializeTime(timestamp, payload);
+// 3. send 
+  xbee.send(tx);
 }
