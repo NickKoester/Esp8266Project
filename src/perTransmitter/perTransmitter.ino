@@ -12,24 +12,26 @@ char *pass = "nickkoester";
 float dBm = 20.5;
 unsigned int serverPort = 4210;
 unsigned int localPort = 2390;
+WiFiPhyMode_t phy = WIFI_PHY_MODE_11B;
 #endif
 
 /* DEVICE 2 */
 #if CONFIG == 2
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
-float dBm = 20.5;
+float dBm = 5.0;
 unsigned int serverPort = 4220;
 unsigned int localPort = 2290;
+WiFiPhyMode_t phy = WIFI_PHY_MODE_11B;
 #endif
 
-#define PACKET_SIZE 600
+#define PACKET_SIZE 1112
 
 IPAddress receiverIP(0, 0, 0, 0);
 WiFiUDP Udp;
 
 /* TRANSMITTER PARAMETERS */
-int NUM_PACKETS = 2000;
+int NUM_PACKETS = 5000;
 double arrivalRate = 1.0;
 int generatorSeed = 1;
 
@@ -51,6 +53,7 @@ void connectToServer() {
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   WiFi.setOutputPower(dBm);
+  WiFi.setPhyMode(phy);
   delay(100);
   
   Serial.print("Attempting to connect to SSID: ");
@@ -94,7 +97,7 @@ void loop() {
     }
     digitalWrite(16, LOW);
 
-    delayMicroseconds(0);
+    delayMicroseconds(10);
   } 
   else {
     delay(10000);

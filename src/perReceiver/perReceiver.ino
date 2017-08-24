@@ -10,6 +10,7 @@ char *ssid = "ESPsoftAP_01";
 char *pass = "nickkoester";
 int channel = 11;
 float dBm = 20.5;
+WiFiPhyMode_t phy = WIFI_PHY_MODE_11B;
 unsigned int localUdpPort = 4210;  // local port to listen on
 #endif
 
@@ -18,11 +19,12 @@ unsigned int localUdpPort = 4210;  // local port to listen on
 char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
 int channel = 11;
-float dBm = 20.5;
+float dBm = 5.0;
+WiFiPhyMode_t phy = WIFI_PHY_MODE_11B;
 unsigned int localUdpPort = 4220;  // local port to listen on
 #endif
 
-#define PACKET_SIZE 600
+#define PACKET_SIZE 1112
 /** Server **/
 WiFiUDP Udp;
 
@@ -54,6 +56,7 @@ void setupAccessPoint() {
   WiFi.disconnect();
   WiFi.mode(WIFI_AP);
   WiFi.setOutputPower(dBm);
+  WiFi.setPhyMode(phy);
   delay(100);
 
   Serial.print("Setting soft-AP ... ");

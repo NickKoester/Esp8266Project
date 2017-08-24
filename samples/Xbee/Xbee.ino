@@ -8,7 +8,7 @@ XBee xbee = XBee();
 #define len 10
 /**** PARAMETERS ****/
 uint16_t addr16 = 0x1234;
-uint8_t option = 1; // Acks disabled
+uint8_t option = 1;
 uint8_t payload[len] = "ABCDEFGHI\0";
 uint8_t id = 0;
 /*******************/

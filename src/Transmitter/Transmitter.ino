@@ -11,6 +11,7 @@ char *ssid = "ESPsoftAP_01";
 char *pass = "nickkoester";
 unsigned int serverPort = 4210;
 unsigned int localPort = 2390;
+WiFiPhyMode_t phy = WIFI_PHY_MODE_11B;
 #endif
 
 /* DEVICE 2 */
@@ -19,6 +20,7 @@ char *ssid = "ESPsoftAP_02";
 char *pass = "nickkoester";
 unsigned int serverPort = 4220;
 unsigned int localPort = 2290;
+WiFiPhyMode_t phy = WIFI_PHY_MODE_11B;
 #endif
 
 IPAddress receiverIP(0, 0, 0, 0);
@@ -43,6 +45,7 @@ void connectToServer() {
   WiFi.softAPdisconnect();
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
+  WiFi.setPhyMode(phy);
   delay(100);
   
   Serial.print("Attempting to connect to SSID: ");
