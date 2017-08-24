@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 #include <XBee.h>
 
-SoftwareSerial mySerial(10,11);
+SoftwareSerial mySerial(2,3);
 XBee xbee = XBee();
 
 #define len 10
@@ -15,47 +15,50 @@ uint8_t id = 1;
 Tx16Request tx = Tx16Request(addr16, option, payload, len, id);
 TxStatusResponse rx = TxStatusResponse();
 
-uint8_t rawTime[4];
-unsigned long start;
-unsigned long sync = 0;
+void waitForRequest() {
+  Serial.println("Waiting for request...");
+
+  //wait for request
+  do {
+    Serial.println("reading...");
+    xbee.readPacket(5000);
+  }while(!xbee.getResponse().isAvailable());
+}
+
+void serializeTime(unsigned long src, uint8_t dest[4]) {
+  Serial.print("Raw Time ");
+  Serial.println(src);
+  
+  dest[0] = src >> 24 & 0xFF;
+  dest[1] = src >> 16 & 0xFF;
+  dest[2] = src >> 8 & 0xFF;
+  dest[3] = src >> 0 & 0xFF;
+
+  Serial.print("Packet: ");
+  for(int i = 0; i < 4; i++) {
+    Serial.print(dest[i], HEX);
+    Serial.print(' ');
+  }
+  Serial.println();
+}
+
+void syncWithTrans() {
+  waitForRequest();
+
+  unsigned long start = millis();
+
+  uint8_t rawTime[4];
+  serializeTime(start, rawTime);
+
+  Tx16Request temp(addr16, option, rawTime, 4, 0);
+  xbee.send(temp);
+}
+
 void setup() {
   Serial.begin(57600);
   mySerial.begin(57600);
   xbee.setSerial(mySerial);
-  
-  Serial.println("Waiting for request...");
-
-  bool gotit = false;
-  while(!gotit) {
-    xbee.readPacket(5000);
-    if(xbee.getResponse().isAvailable()) {
-      gotit = true;
-    }
-    else {
-      Serial.println("didnt get it");
-    }
-  }
-
-  start = millis();
-  
-  Serial.print("Start time in ms: ");
-  Serial.println(start);
-  
-  rawTime[0] = start >> 24 & 0xFF;
-  rawTime[1] = start >> 16 & 0xFF;
-  rawTime[2] = start >> 8 & 0xFF;
-  rawTime[3] = start >> 0 & 0xFF;
-
-  Serial.print("Packet: ");
-  for(int i = 0; i < 4; i++) {
-    Serial.print(rawTime[i], HEX);
-    Serial.print(' ');
-  }
-  Serial.println();
-
-  Tx16Request temp(addr16, option, rawTime, 4, id);
-  xbee.send(temp);
-  
+  syncWithTrans();
 }
 
 void loop() {
