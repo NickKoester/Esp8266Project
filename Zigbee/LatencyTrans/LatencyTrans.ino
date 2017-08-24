@@ -16,52 +16,37 @@ Tx16Request tx = Tx16Request(addr16, option, payload, len, id);
 TxStatusResponse rx = TxStatusResponse();
 Tx16Request rndmb = Tx16Request(addr16, option, payload, len, 0);
 
-uint8_t *rawData;
-uint8_t rawTime[4];
-unsigned long start;
-unsigned long sync = 0;
-void setup() {
-  Serial.begin(57600);
-  mySerial.begin(57600);
-  xbee.setSerial(mySerial);
-  
-  delay(342);
-  Serial.println("Started");
+unsigned long syncMillisBase = 0;
 
-  start = millis();
-
-
-  bool gotit = false;
-  while(!gotit) {
+void requestTimeFromRecv() {
+  do{
     Serial.println("Sending...");
     xbee.send(rndmb);
-
-    do{
-      Serial.println("Waiting for reply");
-      xbee.readPacket(5000);
-    } while(!xbee.getResponse().isAvailable());
-
-    Serial.println("got reply!");
+    Serial.println("Waiting for reply");
+    xbee.readPacket(5000);
+  } while(!xbee.getResponse().isAvailable());
     
-    XBeeResponse &response = xbee.getResponse();
-    if(response.isAvailable()) {
-      Serial.println("available");
-      if(response.getApiId() == RX_16_RESPONSE) {
-        Serial.println("Tx16");
-        if(response.getErrorCode() == NO_ERROR) {
-          Serial.println("no error");
-          rawData = response.getFrameData();
-          gotit = true;
-        }
-      } else {
-        Serial.print("api id = ");
-        Serial.println(response.getApiId());
+  Serial.println("got reply!");
+}
+
+uint8_t *readPacketData() {
+  uint8_t *data = NULL;
+  
+  XBeeResponse &response = xbee.getResponse();
+  if(response.isAvailable()) {
+    Serial.println("available");
+    if(response.getApiId() == RX_16_RESPONSE) {
+      Serial.println("Tx16");
+      if(response.getErrorCode() == NO_ERROR) {
+        Serial.println("no error");
+        data = response.getFrameData();
       }
     }
   }
+  return data;
+}
 
-  memcpy(rawTime, rawData+4, 4);
-  
+unsigned long getTimeFromArray(uint8_t rawTime[4]) {
   Serial.print("Raw time: ");
   for(int i = 0; i < 4; i++) {
     Serial.print(rawTime[i], HEX);
@@ -69,12 +54,46 @@ void setup() {
   }
   Serial.println();
 
+  unsigned long num = 0;
   for(int i = 0; i < 4; i++) {
-    sync += rawTime[i] << ((3-i)*8);
+    num += rawTime[i] << ((3-i)*8);
   }
 
   Serial.print("Sync time in ms: ");
-  Serial.println(sync);
+  Serial.println(num);
+  
+  return num;
+}
+
+void syncTimeWithRecv() {
+  Serial.println("Started");
+
+  unsigned long time1 = millis();
+  requestTimeFromRecv();
+  unsigned long time2 = millis();
+  
+  uint8_t *rawData = readPacketData();
+
+  uint8_t rawTime[4];
+  if(rawData) {
+    memcpy(rawTime, rawData+4, 4);
+  }
+  
+  unsigned long recvTime = getTimeFromArray(rawTime);
+
+  syncMillisBase = recvTime + (time2 - time1) / 2; 
+}
+
+void setup() {
+  Serial.begin(57600);
+  mySerial.begin(57600);
+  xbee.setSerial(mySerial);
+  
+  delay(342);
+
+  syncTimeWithRecv();
+  Serial.print("SyncMillisBase: ");
+  Serial.println(syncMillisBase);
 }
 
 void loop() {
