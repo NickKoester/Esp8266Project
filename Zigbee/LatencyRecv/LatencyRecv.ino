@@ -59,11 +59,8 @@ uint8_t *readPacketData() {
   
   XBeeResponse &response = xbee.getResponse();
   if(response.isAvailable()) {
-    Serial.println("available");
     if(response.getApiId() == RX_16_RESPONSE) {
-      Serial.println("Tx16");
       if(response.getErrorCode() == NO_ERROR) {
-        Serial.println("no error");
         data = response.getFrameData();
       }
     }
@@ -72,7 +69,7 @@ uint8_t *readPacketData() {
 }
 
 unsigned long getTimeFromArray(uint8_t rawTime[4]) {
-  Serial.print("Raw time: ");
+  Serial.print("Packet: ");
   for(int i = 0; i < 4; i++) {
     Serial.print(rawTime[i], HEX);
     Serial.print(' ');
@@ -81,10 +78,11 @@ unsigned long getTimeFromArray(uint8_t rawTime[4]) {
 
   unsigned long num = 0;
   for(int i = 0; i < 4; i++) {
-    num += rawTime[i] << ((3-i)*8);
+    num += (rawTime[i] << ((3-i)*8));
+    Serial.println(num);
   }
 
-  Serial.print("Sync time in ms: ");
+  Serial.print("Send Time: ");
   Serial.println(num);
   
   return num;
@@ -95,11 +93,14 @@ void setup() {
   mySerial.begin(57600);
   xbee.setSerial(mySerial);
   syncWithTrans();
+  delay(5000);
 }
 
 void loop() {
   xbee.readPacket(5000);
   unsigned long recvTime = millis();
+  Serial.print("Recv Time: ");
+  Serial.println(recvTime);
   
   uint8_t *data = readPacketData();
   
