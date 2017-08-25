@@ -54,13 +54,65 @@ void syncWithTrans() {
   xbee.send(temp);
 }
 
+uint8_t *readPacketData() {
+  uint8_t *data = NULL;
+  
+  XBeeResponse &response = xbee.getResponse();
+  if(response.isAvailable()) {
+    if(response.getApiId() == RX_16_RESPONSE) {
+      if(response.getErrorCode() == NO_ERROR) {
+        data = response.getFrameData();
+      }
+    }
+  }
+  return data;
+}
+
+unsigned long getTimeFromArray(uint8_t rawTime[4]) {
+  Serial.print("Packet: ");
+  for(int i = 0; i < 4; i++) {
+    Serial.print(rawTime[i], HEX);
+    Serial.print(' ');
+  }
+  Serial.println();
+
+  unsigned long num = 0;
+  for(int i = 0; i < 4; i++) {
+    num += (rawTime[i] << ((3-i)*8));
+    Serial.println(num);
+  }
+
+  Serial.print("Send Time: ");
+  Serial.println(num);
+  
+  return num;
+}
+
 void setup() {
   Serial.begin(57600);
   mySerial.begin(57600);
   xbee.setSerial(mySerial);
   syncWithTrans();
+  delay(5000);
 }
 
 void loop() {
+  xbee.readPacket(5000);
+  unsigned long recvTime = millis();
+  Serial.print("Recv Time: ");
+  Serial.println(recvTime);
   
+  uint8_t *data = readPacketData();
+  
+  uint8_t rawTime[4];
+  if(data) {
+    memcpy(rawTime, data+4, 4);
+  }
+  
+  unsigned long sendTime = getTimeFromArray(rawTime);
+  unsigned long transmitLatency = recvTime - sendTime;
+
+  Serial.print("Transmit Latency: ");
+  Serial.println(transmitLatency);
+  delay(1000);
 }
