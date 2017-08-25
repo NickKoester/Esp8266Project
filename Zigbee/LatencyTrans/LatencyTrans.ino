@@ -84,6 +84,10 @@ void syncTimeWithRecv() {
 
   syncMillisBase = recvTime + (time2 - time1) / 2;
   origin = time2;
+  Serial.print("SyncMillisBase: ");
+  Serial.println(syncMillisBase);
+  Serial.print("Origin: ");
+  Serial.println(origin);
 }
 
 void serializeTime(unsigned long src, uint8_t dest[4]) {
@@ -101,16 +105,24 @@ void setup() {
   delay(342);
 
   syncTimeWithRecv();
-  Serial.print("Offset: ");
-  Serial.println(offset);
+  delay(5000);
 }
 
 void loop() {
 // 1. Get synced timestamp
   unsigned long timestamp = syncMillisBase + millis() - origin;
+  Serial.print("Timestamp: ");
+  Serial.println(timestamp);
 // 2. put in packet
   memset(payload, '\0', len);
   serializeTime(timestamp, payload);
+  Serial.print("Raw time: ");
+  for(int i = 0; i < 4; i++) {
+    Serial.print(payload[i], HEX);
+    Serial.print(' ');
+  }
+  Serial.println();
 // 3. send 
   xbee.send(tx);
+  delay(5000);
 }
